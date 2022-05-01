@@ -81,7 +81,7 @@ const searchAnime = () => {
   .catch(err => console.log(err))
 }
 
-buttonSearch.addEventListener('click', searchAnime())
+buttonSearch.addEventListener('click', () => searchAnime())
 
 searchbar.addEventListener('keyup', e => {
   if (e.which === 13) {
