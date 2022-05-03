@@ -1,14 +1,10 @@
-const searchBar = document.querySelector('#searchbar')
 const results = document.querySelector('#results')
-const spinner = document.querySelector('.spinner-border')
-const notFound = document.querySelector('.not-found')
-const container = document.querySelector('.container')
+const searchBar = document.querySelector('#searchbar')
 
-const whileSearchAnime = () => {
-  results.innerHTML = ''
-  spinner.classList.add('d-none')
-  searchBar.value = ''
-}
+const whileSearchAnimeDo = '<div class="spinner-border m-auto" role="status"></div>'
+const notFound = `<div class="col-md-4 mt-3">
+<h1 class="text-center">Anime not found!</h1>
+</div>`
 
 const infoCards = results => {
   let img = results.images.jpg.image_url
@@ -38,19 +34,18 @@ const infoAnime = result => {
 
 const searchAnime = () => {
   let search = searchBar.value
-  notFound.classList.add('d-none')
-  spinner.classList.remove('d-none')
+  results.innerHTML = whileSearchAnimeDo
   fetch(`https://api.jikan.moe/v4/anime?q=${search}`)
   .then(responses => responses.json())
   .then(responses => {
     if (responses.data.length == 0) {
-      whileSearchAnime()
-      notFound.classList.remove('d-none')
+      results.innerHTML = notFound
+      searchBar.value = ''
     } else {
-      whileSearchAnime()
+      let cards = ''
       responses.data.forEach(res => {
         let data = infoCards(res)
-        $('#results').append(`
+        cards += `
           <div class="col-md-4 mt-3">
             <div class="card">
             <img src="${data[0]}" class="card-img-top">
@@ -59,20 +54,16 @@ const searchAnime = () => {
             <h6 class="card-subtitle mb-2 text-muted">${data[2]}</h6>
             <a href="#" data-mal-id="${data[3]}" class="card-link"
                data-bs-toggle="modal" data-bs-target="#detailAnime">Click for more info!</a>
-          </div></div></div>`)
+          </div></div></div>`
       })
+      results.innerHTML = cards
+      searchBar.value = ''
     }
   })
   .catch(err => console.log(err))
 }
 
-searchBar.addEventListener('keyup', e => {
-  if (e.which === 13) {
-    searchAnime()
-  }
-})
-
-container.addEventListener('click', e => {
+results.addEventListener('click', e => {
   if (e.target.className == "card-link") {
     let clickedId = e.target.dataset.malId
     fetch(`https://api.jikan.moe/v4/anime/${clickedId}`)
@@ -81,10 +72,10 @@ container.addEventListener('click', e => {
       let data = infoAnime(responses.data)
       const modalBody = document.querySelector('.modal-body')
       const malDetailed = document.querySelector('.mal-detailed')
+      const closeModal = document.querySelectorAll('#closeModal')
       modalBody.innerHTML ='...'
-
       malDetailed.setAttribute('href', data[6])
-      $('.modal-body').html(`
+      modalBody.innerHTML = `
           <div class="container-fluid">
             <div class="row">
               <div class="col-md-4">
@@ -97,7 +88,8 @@ container.addEventListener('click', e => {
                   <li class="list-group-item">${data[3]}</li>
                   <li class="list-group-item">${data[4]}</li>
                   <li class="list-group-item">${data[5]}</li>
-                </ul></div></div></div>`)
+                </ul></div></div></div>`
+      closeModal.forEach(el => el.addEventListener('click', () => modalBody.innerHTML = '...'))
      })
     .catch(err => console.log(err))
   }
