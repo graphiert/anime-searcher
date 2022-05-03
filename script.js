@@ -1,11 +1,6 @@
 const results = document.querySelector('#results')
 const searchBar = document.querySelector('#searchbar')
 
-const whileSearchAnimeDo = '<div class="spinner-border m-auto" role="status"></div>'
-const notFound = `<div class="col-md-4 mt-3">
-<h1 class="text-center">Anime not found!</h1>
-</div>`
-
 const infoCards = results => {
   let img = results.images.jpg.image_url
   let title = results.title
@@ -34,12 +29,14 @@ const infoAnime = result => {
 
 const searchAnime = () => {
   let search = searchBar.value
-  results.innerHTML = whileSearchAnimeDo
+  results.innerHTML = '<div class="spinner-border m-auto" role="status"></div>'
   fetch(`https://api.jikan.moe/v4/anime?q=${search}`)
   .then(responses => responses.json())
   .then(responses => {
     if (responses.data.length == 0) {
-      results.innerHTML = notFound
+      results.innerHTML = `<div class="col-md-4 mt-3">
+        <h1 class="text-center">Anime not found!</h1>
+      </div>`
       searchBar.value = ''
     } else {
       let cards = ''
