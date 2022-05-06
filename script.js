@@ -57,7 +57,7 @@ const searchAnime = () => {
       searchBar.value = ''
     }
   })
-  .catch(err => console.log(err))
+  .catch(err => alert("ERROR: " + err))
 }
 
 results.addEventListener('click', e => {
@@ -70,6 +70,8 @@ results.addEventListener('click', e => {
       const modalBody = document.querySelector('.modal-body')
       const malDetailed = document.querySelector('.mal-detailed')
       const closeModal = document.querySelectorAll('#closeModal')
+      const modalLabel = document.querySelector('#modalLabel')
+      modalLabel.innerHTML = data[1]
       modalBody.innerHTML ='...'
       malDetailed.setAttribute('href', data[6])
       modalBody.innerHTML = `
@@ -86,8 +88,13 @@ results.addEventListener('click', e => {
                   <li class="list-group-item">${data[4]}</li>
                   <li class="list-group-item">${data[5]}</li>
                 </ul></div></div></div>`
-      closeModal.forEach(el => el.addEventListener('click', () => modalBody.innerHTML = '...'))
-     })
-    .catch(err => console.log(err))
+      closeModal.forEach(el => {
+        el.addEventListener('click', () => { 
+          modalBody.innerHTML = '...'
+          modalLabel.innerHTML = 'Title'
+        })
+      })
+    })
+    .catch(err => alert("ERROR: " + err))
   }
 })
