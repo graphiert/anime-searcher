@@ -11,6 +11,26 @@ const infoCards = results => {
   return [img, title, year, malId]
 }
 
+fetch(`https://api.jikan.moe/v4/anime`)
+.then(responses => responses.json())
+.then(responses => {
+    let cards = ''
+    responses.data.forEach(res => {
+      let data = infoCards(res)
+      cards += `
+        <div class="col-md-4 mt-3">
+          <div class="card">
+          <img src="${data[0]}" class="card-img-top">
+          <div class="card-body">
+          <h5 class="card-title">${data[1]}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">${data[2]}</h6>
+          <a href="#" data-mal-id="${data[3]}" class="card-link"
+             data-bs-toggle="modal" data-bs-target="#detailAnime">Click for more info!</a>
+        </div></div></div>`
+    })
+    results.innerHTML = cards
+})
+
 const infoAnime = result => {
   let img = result.images.jpg.large_image_url
   let title = result.title
