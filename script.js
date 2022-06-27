@@ -8,7 +8,12 @@ const infoCards = results => {
   results.year == null ? year = "Unknown" : year = results.year
   let malId = results.mal_id
   
-  return [img, title, year, malId]
+  return {
+    img: img,
+    title: title,
+    year: year,
+    malId: malId
+  }
 }
 
 fetch(`https://api.jikan.moe/v4/anime`)
@@ -20,11 +25,11 @@ fetch(`https://api.jikan.moe/v4/anime`)
       cards += `
         <div class="col-md-4 mt-3">
           <div class="card">
-          <img src="${data[0]}" class="card-img-top">
+          <img src="${data.img}" class="card-img-top">
           <div class="card-body">
-          <h5 class="card-title">${data[1]}</h5>
-          <h6 class="card-subtitle mb-2 text-muted">${data[2]}</h6>
-          <a href="#" data-mal-id="${data[3]}" class="card-link"
+          <h5 class="card-title">${data.title}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">${data.year}</h6>
+          <a href="#" data-mal-id="${data.malId}" class="card-link"
              data-bs-toggle="modal" data-bs-target="#detailAnime">Click for more info!</a>
         </div></div></div>`
     })
@@ -44,7 +49,15 @@ const infoAnime = result => {
   stud.length == 0 ? studio = "Studio: Unknown" : studio = "Studio: " + stud.join(', ')
   let malUrl = result.url
   
-  return [img, title, score, typeEps, duration, studio, malUrl]
+  return {
+    img: img,
+    title: title,
+    score: score,
+    typeEps: typeEps,
+    duration: duration,
+    studio: studio,
+    malUrl: malUrl
+  }
 }
 
 const searchAnime = () => {
@@ -65,11 +78,11 @@ const searchAnime = () => {
         cards += `
           <div class="col-md-4 mt-3">
             <div class="card">
-            <img src="${data[0]}" class="card-img-top">
+            <img src="${data.img}" class="card-img-top">
             <div class="card-body">
-            <h5 class="card-title">${data[1]}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">${data[2]}</h6>
-            <a href="#" data-mal-id="${data[3]}" class="card-link"
+            <h5 class="card-title">${data.title}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">${data.year}</h6>
+            <a href="#" data-mal-id="${data.malId}" class="card-link"
                data-bs-toggle="modal" data-bs-target="#detailAnime">Click for more info!</a>
           </div></div></div>`
       })
@@ -91,22 +104,22 @@ results.addEventListener('click', e => {
       const malDetailed = document.querySelector('.mal-detailed')
       const closeModal = document.querySelectorAll('#closeModal')
       const modalLabel = document.querySelector('#modalLabel')
-      modalLabel.innerHTML = data[1]
+      modalLabel.innerHTML = data.title
       modalBody.innerHTML ='...'
-      malDetailed.setAttribute('href', data[6])
+      malDetailed.setAttribute('href', data.malUrl)
       modalBody.innerHTML = `
           <div class="container-fluid">
             <div class="row">
               <div class="col-md-4">
-                <img src="${data[0]}" class ="img-fluid">
+                <img src="${data.img}" class ="img-fluid">
               </div>
               <div class="col-md-8">
                 <ul class="list-group">
-                  <li class="list-group-item"><h4>${data[1]}</h4></li>
-                  <li class="list-group-item">${data[2]}</li>
-                  <li class="list-group-item">${data[3]}</li>
-                  <li class="list-group-item">${data[4]}</li>
-                  <li class="list-group-item">${data[5]}</li>
+                  <li class="list-group-item"><h4>${data.title}</h4></li>
+                  <li class="list-group-item">${data.score}</li>
+                  <li class="list-group-item">${data.typeEps}</li>
+                  <li class="list-group-item">${data.duration}</li>
+                  <li class="list-group-item">${data.studio}</li>
                 </ul></div></div></div>`
       closeModal.forEach(el => {
         el.addEventListener('click', () => { 
